@@ -15,13 +15,11 @@ public:
 
         while (j < s.size())
         {
-            if (set.count(s[j]))
+            while (set.count(s[j]))
                 set.erase(s[i++]);
-            else
-            {
-                set.insert(s[j++]);
-                max_len = max(max_len, j - i);
-            }
+
+            set.insert(s[j++]);
+            max_len = max(max_len, j - i);
         }
 
         return max_len;
