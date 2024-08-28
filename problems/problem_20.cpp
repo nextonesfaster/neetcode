@@ -1,26 +1,37 @@
-// https://neetcode.io/problems/validate-parentheses
+// https://neetcode.io/problems/sliding-window-maximum
 
-#include <string>
-#include <stack>
+#include <vector>
+#include <deque>
 
 class Solution
 {
 public:
-    bool isValid(std::string s)
+    std::vector<int> maxSlidingWindow(std::vector<int> &nums, int k)
     {
-        std::stack<char> stack;
-        for (auto c : s)
+        int n = nums.size();
+        std::vector<int> res;
+        res.reserve(n - k + 1);
+
+        std::deque<int> deque;
+        int l = 0;
+
+        for (int r = 0; r < n; r++)
         {
-            if (c == '[' || c == '{' || c == '(')
-                stack.push(c);
-            else
+            while (!deque.empty() && nums[deque.back()] < nums[r])
+                deque.pop_back();
+
+            deque.push_back(r);
+
+            if (l > deque.front())
+                deque.pop_front();
+
+            if (r + 1 >= k)
             {
-                char popped = stack.top();
-                stack.pop();
-                if ((c == ']' && popped != '[') || (c == '}' && popped != '{') || (c == ')' && popped != '('))
-                    return false;
+                res.push_back(nums[deque.front()]);
+                l++;
             }
         }
-        return stack.empty();
+
+        return res;
     }
 };

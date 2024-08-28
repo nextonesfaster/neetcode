@@ -1,65 +1,87 @@
-// https://neetcode.io/problems/minimum-window-with-characters
+// https://neetcode.io/problems/permutation-string
 
 #include <string>
-#include <vector>
 #include <algorithm>
-#include <iostream>
+
+using namespace std;
 
 class Solution
 {
 public:
-    std::string minWindow(std::string s, std::string t)
+    // runtime: O(26 + n)
+    bool checkInclusion(string s1, string s2)
     {
-        if (t.length() > s.length())
-            return "";
+        if (s1.length() > s2.length())
+            return false;
 
-        const size_t array_size = 'z' - 'A' + 1;
-        size_t t_chars[array_size] = {0};
-        for (char c : t)
-            t_chars[c - 'A']++;
-
-        size_t window_chars[array_size] = {0};
-        size_t l = 0, conditions_true = 0;
-        size_t required_true = std::count_if(t_chars, t_chars + array_size, [](size_t c)
-                                             { return c; });
-        size_t lmin = -1, rmin = std::numeric_limits<size_t>::max();
-
-        for (size_t r = 0; r < s.length(); r++)
+        int s1_chars[26] = {0};
+        int s2_chars[26] = {0};
+        for (int i = 0; i < s1.size(); i++)
         {
-            size_t index = s[r] - 'A';
-            if (t_chars[index])
-            {
-                window_chars[index]++;
-                if (window_chars[index] == t_chars[index])
-                    conditions_true++;
-            }
+            s1_chars[s1[i] - 'a']++;
+            s2_chars[s2[i] - 'a']++;
+        }
 
-            while (conditions_true == required_true)
-            {
-                if (lmin == -1 || r - l < rmin - lmin)
-                    lmin = l, rmin = r;
+        int matches = 0;
+        for (int i = 0; i < 26; i++)
+            if (s1_chars[i] == s2_chars[i])
+                matches++;
 
-                index = s[l++] - 'A';
-                if (t_chars[index])
-                {
-                    if (t_chars[index] == window_chars[index])
-                        conditions_true--;
-                    window_chars[index]--;
-                }
+        int i = 0;
+        for (int j = s1.size(); j < s2.size(); j++)
+        {
+            if (matches == 26)
+                return true;
+
+            int index = s2[j] - 'a';
+            s2_chars[index]++;
+            if (s2_chars[index] == s1_chars[index])
+                matches++;
+            else if (s2_chars[index] == s1_chars[index] + 1)
+                matches--;
+
+            index = s2[i] - 'a';
+            if (s2_chars[index] == s1_chars[index])
+                matches--;
+            else if (s2_chars[index] == s1_chars[index] + 1)
+                matches++;
+            s2_chars[index]--;
+            i++;
+        }
+
+        return matches == 26;
+    }
+
+    // runtime: O(26n)
+    bool checkInclusionAlt(string s1, string s2)
+    {
+        if (s1.length() > s2.length())
+            return false;
+
+        int s1_chars[26] = {0};
+        for (char c : s1)
+            s1_chars[c - 'a']++;
+
+        int curr_chars[26] = {0};
+        int i = 0, j = 0;
+
+        while (j < s2.size())
+        {
+            if (j - i == s1.length())
+                break;
+
+            if (s1_chars[s2[j] - 'a'] > curr_chars[s2[j] - 'a'])
+                curr_chars[s2[j++] - 'a']++;
+            else if (s1_chars[s2[j] - 'a'])
+                curr_chars[s2[i++] - 'a']--;
+            else
+            {
+                std::fill(curr_chars, curr_chars + 26, 0);
+                j++;
+                i = j;
             }
         }
 
-        if (lmin != -1)
-            return s.substr(lmin, rmin - lmin + 1);
-        else
-            return "";
+        return (j - i == s1.length());
     }
 };
-
-int main()
-{
-    Solution solution;
-    std::cout << solution.minWindow("OUZODYXAZV", "XYZ") << std::endl;
-    std::cout << solution.minWindow("xyz", "xyz") << std::endl;
-    std::cout << solution.minWindow("ADOBECODEBANC", "ABC") << std::endl;
-}

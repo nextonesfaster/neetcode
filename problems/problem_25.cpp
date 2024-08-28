@@ -1,31 +1,30 @@
-// https://neetcode.io/problems/car-fleet
-
 #include <vector>
+#include <stack>
 
 class Solution
 {
 public:
-    int carFleet(int target, std::vector<int> &position, std::vector<int> &speed)
+    std::vector<int> dailyTemperatures(std::vector<int> &temperatures)
     {
-        std::vector<std::pair<int, int>> cars;
-        for (int i = 0; i < position.size(); i++)
-            cars.push_back({position[i], speed[i]});
+        std::vector<int> result(temperatures.size(), 0);
+        std::stack<int> q;
 
-        std::sort(cars.begin(), cars.end(), [](const std::pair<int, int> &a, const std::pair<int, int> &b)
-                  { return a.first > b.first; });
-
-        float last = std::numeric_limits<float>::min();
-        int n = 0;
-        for (int i = 0; i < cars.size(); i++)
+        for (int i = temperatures.size() - 1; i >= 0; i--)
         {
-            float time = static_cast<float>(target - cars[i].first) / static_cast<float>(cars[i].second);
-            if (time > last)
+            while (!q.empty())
             {
-                last = time;
-                n++;
+                int j = q.top();
+                if (temperatures[i] < temperatures[j])
+                {
+                    result[i] = j - i;
+                    break;
+                }
+                else
+                    q.pop();
             }
+            q.push(i);
         }
 
-        return n;
+        return result;
     }
 };

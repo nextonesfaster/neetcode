@@ -1,50 +1,36 @@
-#include <string>
-#include <vector>
+// https://neetcode.io/problems/minimum-stack
+
 #include <stack>
 
-class Solution
+class MinStack
 {
+    std::stack<std::pair<int, int>> vals;
+
 public:
-    int evalRPN(std::vector<std::string> &tokens)
+    MinStack()
     {
-        std::stack<int> stack;
-        for (auto &token : tokens)
-        {
-            if (token == "+")
-            {
-                int a = stack.top();
-                stack.pop();
-                int b = stack.top();
-                stack.pop();
-                stack.push(b + a);
-            }
-            else if (token == "-")
-            {
-                int a = stack.top();
-                stack.pop();
-                int b = stack.top();
-                stack.pop();
-                stack.push(b - a);
-            }
-            else if (token == "*")
-            {
-                int a = stack.top();
-                stack.pop();
-                int b = stack.top();
-                stack.pop();
-                stack.push(b * a);
-            }
-            else if (token == "/")
-            {
-                int a = stack.top();
-                stack.pop();
-                int b = stack.top();
-                stack.pop();
-                stack.push(b / a);
-            }
-            else
-                stack.push(std::stoi(token));
-        }
-        return stack.top();
+    }
+
+    void push(int val)
+    {
+        if (vals.empty())
+            vals.push({val, val});
+        else
+            vals.push({val, std::min(vals.top().second, val)});
+    }
+
+    void pop()
+    {
+        vals.pop();
+    }
+
+    int top()
+    {
+        return vals.top().first;
+    }
+
+    int getMin()
+    {
+        return vals.top().second;
     }
 };

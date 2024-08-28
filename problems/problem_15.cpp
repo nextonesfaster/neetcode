@@ -1,27 +1,22 @@
-// https://neetcode.io/problems/longest-substring-without-duplicates
+// https://neetcode.io/problems/buy-and-sell-crypto
 
-#include <string>
-#include <unordered_set>
-
-using namespace std;
+#include <vector>
 
 class Solution
 {
 public:
-    int lengthOfLongestSubstring(string s)
+    int maxProfit(std::vector<int> &prices)
     {
-        unordered_set<char> set;
-        int max_len = 0, i = 0, j = 0;
+        int l = 0, max_profit = 0;
 
-        while (j < s.size())
+        for (int r = 0; r < prices.size(); r++)
         {
-            while (set.count(s[j]))
-                set.erase(s[i++]);
-
-            set.insert(s[j++]);
-            max_len = max(max_len, j - i);
+            if (prices[r] > prices[l])
+                max_profit = std::max(max_profit, prices[r] - prices[l]);
+            else
+                l = r;
         }
 
-        return max_len;
+        return max_profit;
     }
 };

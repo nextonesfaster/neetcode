@@ -1,40 +1,50 @@
-// https://neetcode.io/problems/generate-parentheses
-
 #include <string>
 #include <vector>
+#include <stack>
 
 class Solution
 {
-    class QueueElement
-    {
-    public:
-        int open;
-        int closed;
-        std::string s;
-        QueueElement(int o, int c, std::string s) : open(o), closed(c), s(s) {}
-    };
-
 public:
-    std::vector<std::string> generateParenthesis(int n)
+    int evalRPN(std::vector<std::string> &tokens)
     {
-        std::vector<std::string> result;
-        std::vector<QueueElement> queue = {{0, 0, ""}};
-
-        while (!queue.empty())
+        std::stack<int> stack;
+        for (auto &token : tokens)
         {
-            QueueElement e = queue.back();
-            queue.pop_back();
-
-            if (e.open < n)
-                queue.push_back({e.open + 1, e.closed, e.s + '('});
-
-            if (e.closed < e.open)
-                queue.push_back({e.open, e.closed + 1, e.s + ')'});
-
-            if (e.s.length() == n * 2)
-                result.push_back(e.s);
+            if (token == "+")
+            {
+                int a = stack.top();
+                stack.pop();
+                int b = stack.top();
+                stack.pop();
+                stack.push(b + a);
+            }
+            else if (token == "-")
+            {
+                int a = stack.top();
+                stack.pop();
+                int b = stack.top();
+                stack.pop();
+                stack.push(b - a);
+            }
+            else if (token == "*")
+            {
+                int a = stack.top();
+                stack.pop();
+                int b = stack.top();
+                stack.pop();
+                stack.push(b * a);
+            }
+            else if (token == "/")
+            {
+                int a = stack.top();
+                stack.pop();
+                int b = stack.top();
+                stack.pop();
+                stack.push(b / a);
+            }
+            else
+                stack.push(std::stoi(token));
         }
-
-        return result;
+        return stack.top();
     }
 };

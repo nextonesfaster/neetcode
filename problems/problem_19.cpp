@@ -1,37 +1,65 @@
-// https://neetcode.io/problems/sliding-window-maximum
+// https://neetcode.io/problems/minimum-window-with-characters
 
+#include <string>
 #include <vector>
-#include <deque>
+#include <algorithm>
+#include <iostream>
 
 class Solution
 {
 public:
-    std::vector<int> maxSlidingWindow(std::vector<int> &nums, int k)
+    std::string minWindow(std::string s, std::string t)
     {
-        int n = nums.size();
-        std::vector<int> res;
-        res.reserve(n - k + 1);
+        if (t.length() > s.length())
+            return "";
 
-        std::deque<int> deque;
-        int l = 0;
+        const size_t array_size = 'z' - 'A' + 1;
+        size_t t_chars[array_size] = {0};
+        for (char c : t)
+            t_chars[c - 'A']++;
 
-        for (int r = 0; r < n; r++)
+        size_t window_chars[array_size] = {0};
+        size_t l = 0, conditions_true = 0;
+        size_t required_true = std::count_if(t_chars, t_chars + array_size, [](size_t c)
+                                             { return c; });
+        size_t lmin = -1, rmin = std::numeric_limits<size_t>::max();
+
+        for (size_t r = 0; r < s.length(); r++)
         {
-            while (!deque.empty() && nums[deque.back()] < nums[r])
-                deque.pop_back();
-
-            deque.push_back(r);
-
-            if (l > deque.front())
-                deque.pop_front();
-
-            if (r + 1 >= k)
+            size_t index = s[r] - 'A';
+            if (t_chars[index])
             {
-                res.push_back(nums[deque.front()]);
-                l++;
+                window_chars[index]++;
+                if (window_chars[index] == t_chars[index])
+                    conditions_true++;
+            }
+
+            while (conditions_true == required_true)
+            {
+                if (lmin == -1 || r - l < rmin - lmin)
+                    lmin = l, rmin = r;
+
+                index = s[l++] - 'A';
+                if (t_chars[index])
+                {
+                    if (t_chars[index] == window_chars[index])
+                        conditions_true--;
+                    window_chars[index]--;
+                }
             }
         }
 
-        return res;
+        if (lmin != -1)
+            return s.substr(lmin, rmin - lmin + 1);
+        else
+            return "";
     }
 };
+
+int main()
+{
+    Solution solution;
+    std::cout << solution.minWindow("OUZODYXAZV", "XYZ") << std::endl;
+    std::cout << solution.minWindow("xyz", "xyz") << std::endl;
+    std::cout << solution.minWindow("ADOBECODEBANC", "ABC") << std::endl;
+}

@@ -1,87 +1,60 @@
-// https://neetcode.io/problems/permutation-string
+// https://neetcode.io/problems/longest-repeating-substring-with-replacement
 
 #include <string>
-#include <algorithm>
 
 using namespace std;
 
 class Solution
 {
 public:
-    // runtime: O(26 + n)
-    bool checkInclusion(string s1, string s2)
+    // this runs in O(n) and takes O(26) space
+    int characterReplacement(string s, int k)
     {
-        if (s1.length() > s2.length())
-            return false;
+        if (s.empty())
+            return 0;
 
-        int s1_chars[26] = {0};
-        int s2_chars[26] = {0};
-        for (int i = 0; i < s1.size(); i++)
+        int max_len = 0;
+        int l = 0;
+        vector<int> curr_counts(26, 0);
+        int maxf = 0;
+
+        for (int r = 0; r < s.size(); r++)
         {
-            s1_chars[s1[i] - 'a']++;
-            s2_chars[s2[i] - 'a']++;
+            curr_counts[s[r] - 'A']++;
+            maxf = max(maxf, curr_counts[s[r] - 'A']);
+
+            if (r - l + 1 - maxf > k)
+                curr_counts[s[l++]]--;
+            max_len = max(max_len, r - l + 1);
         }
 
-        int matches = 0;
-        for (int i = 0; i < 26; i++)
-            if (s1_chars[i] == s2_chars[i])
-                matches++;
-
-        int i = 0;
-        for (int j = s1.size(); j < s2.size(); j++)
-        {
-            if (matches == 26)
-                return true;
-
-            int index = s2[j] - 'a';
-            s2_chars[index]++;
-            if (s2_chars[index] == s1_chars[index])
-                matches++;
-            else if (s2_chars[index] == s1_chars[index] + 1)
-                matches--;
-
-            index = s2[i] - 'a';
-            if (s2_chars[index] == s1_chars[index])
-                matches--;
-            else if (s2_chars[index] == s1_chars[index] + 1)
-                matches++;
-            s2_chars[index]--;
-            i++;
-        }
-
-        return matches == 26;
+        return max_len;
     }
 
-    // runtime: O(26n)
-    bool checkInclusionAlt(string s1, string s2)
+    // this runs in O(26n) and takes O(1) space
+    int characterReplacementAlt(string s, int k)
     {
-        if (s1.length() > s2.length())
-            return false;
+        if (s.empty())
+            return 0;
 
-        int s1_chars[26] = {0};
-        for (char c : s1)
-            s1_chars[c - 'a']++;
-
-        int curr_chars[26] = {0};
-        int i = 0, j = 0;
-
-        while (j < s2.size())
+        int max_len = 0;
+        for (char c = 'A'; c <= 'Z'; c++)
         {
-            if (j - i == s1.length())
-                break;
-
-            if (s1_chars[s2[j] - 'a'] > curr_chars[s2[j] - 'a'])
-                curr_chars[s2[j++] - 'a']++;
-            else if (s1_chars[s2[j] - 'a'])
-                curr_chars[s2[i++] - 'a']--;
-            else
+            int i = 0, j = 0, replaced = 0;
+            while (j < s.size())
             {
-                std::fill(curr_chars, curr_chars + 26, 0);
-                j++;
-                i = j;
+                if (s[j] == c)
+                    j++;
+                else if (replaced < k)
+                    j++, replaced++;
+                else if (s[i] == c)
+                    i++;
+                else
+                    i++, replaced--;
+                max_len = max(max_len, j - i);
             }
         }
 
-        return (j - i == s1.length());
+        return max_len;
     }
 };

@@ -1,36 +1,26 @@
-// https://neetcode.io/problems/minimum-stack
+// https://neetcode.io/problems/validate-parentheses
 
+#include <string>
 #include <stack>
 
-class MinStack
+class Solution
 {
-    std::stack<std::pair<int, int>> vals;
-
 public:
-    MinStack()
+    bool isValid(std::string s)
     {
-    }
-
-    void push(int val)
-    {
-        if (vals.empty())
-            vals.push({val, val});
-        else
-            vals.push({val, std::min(vals.top().second, val)});
-    }
-
-    void pop()
-    {
-        vals.pop();
-    }
-
-    int top()
-    {
-        return vals.top().first;
-    }
-
-    int getMin()
-    {
-        return vals.top().second;
+        std::stack<char> stack;
+        for (auto c : s)
+        {
+            if (c == '[' || c == '{' || c == '(')
+                stack.push(c);
+            else
+            {
+                char popped = stack.top();
+                stack.pop();
+                if ((c == ']' && popped != '[') || (c == '}' && popped != '{') || (c == ')' && popped != '('))
+                    return false;
+            }
+        }
+        return stack.empty();
     }
 };
