@@ -11,7 +11,7 @@ output_name="${filename%.*}"
 
 mkdir -p out
 
-g++ -std=c++11 "$1" -o "out/$output_name"
+g++ -std=c++17 "$1" -o "out/$output_name"
 
 if [ $? -eq 0 ]; then
   echo "Compilation successful. Output binary: out/$output_name"
