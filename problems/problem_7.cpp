@@ -1,3 +1,5 @@
+// https://neetcode.io/problems/products-of-array-discluding-self
+
 #include <vector>
 #include <assert.h>
 

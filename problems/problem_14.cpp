@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/trapping-rain-water/
+// https://neetcode.io/problems/trapping-rain-water
 
 #include <vector>
 #include <assert.h>
