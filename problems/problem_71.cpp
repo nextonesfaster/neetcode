@@ -7,7 +7,7 @@ class Solution
 {
     std::vector<std::vector<int>> res;
 
-    void backtrack(const std::vector<int> &nums, std::vector<int> curr, int curr_idx)
+    void backtrack(const std::vector<int> &nums, std::vector<int> &curr, int curr_idx)
     {
         res.push_back(curr);
         for (int i = curr_idx; i < nums.size(); i++)
@@ -24,7 +24,8 @@ public:
     std::vector<std::vector<int>> subsetsWithDup(std::vector<int> &nums)
     {
         std::sort(nums.begin(), nums.end());
-        backtrack(nums, {}, 0);
+        std::vector<int> curr;
+        backtrack(nums, curr, 0);
         return res;
     }
 
