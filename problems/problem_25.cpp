@@ -1,32 +1,26 @@
 // https://neetcode.io/problems/daily-temperatures
 
-#include <vector>
 #include <stack>
+#include <vector>
 
-class Solution
-{
+class Solution {
 public:
-    std::vector<int> dailyTemperatures(std::vector<int> &temperatures)
-    {
-        std::vector<int> result(temperatures.size(), 0);
-        std::stack<int> q;
+  std::vector<int> dailyTemperatures(std::vector<int> &temperatures) {
+    std::vector<int> result(temperatures.size(), 0);
+    std::stack<int> q;
 
-        for (int i = temperatures.size() - 1; i >= 0; i--)
-        {
-            while (!q.empty())
-            {
-                int j = q.top();
-                if (temperatures[i] < temperatures[j])
-                {
-                    result[i] = j - i;
-                    break;
-                }
-                else
-                    q.pop();
-            }
-            q.push(i);
-        }
-
-        return result;
+    for (int i = temperatures.size() - 1; i >= 0; i--) {
+      while (!q.empty()) {
+        int j = q.top();
+        if (temperatures[i] < temperatures[j]) {
+          result[i] = j - i;
+          break;
+        } else
+          q.pop();
+      }
+      q.push(i);
     }
+
+    return result;
+  }
 };
