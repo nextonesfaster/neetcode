@@ -5,35 +5,40 @@
 /**
  * Definition for a binary tree node.
  */
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-class Solution {
+class Solution
+{
 public:
-  int kthSmallest(TreeNode *root, int k) {
-    std::stack<TreeNode *> stack;
-    TreeNode *curr = root;
+    int kthSmallest(TreeNode *root, int k)
+    {
+        std::stack<TreeNode *> stack;
+        TreeNode *curr = root;
 
-    while (!stack.empty() || curr) {
-      while (curr) {
-        stack.push(curr);
-        curr = curr->left;
-      }
+        while (!stack.empty() || curr)
+        {
+            while (curr)
+            {
+                stack.push(curr);
+                curr = curr->left;
+            }
 
-      curr = stack.top();
-      stack.pop();
-      k--;
-      if (k == 0)
-        return curr->val;
-      curr = curr->right;
+            curr = stack.top();
+            stack.pop();
+            k--;
+            if (k == 0)
+                return curr->val;
+            curr = curr->right;
+        }
+
+        return -1;
     }
-
-    return -1;
-  }
 };

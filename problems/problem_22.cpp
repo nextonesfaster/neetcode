@@ -2,22 +2,24 @@
 
 #include <stack>
 
-class MinStack {
-  std::stack<std::pair<int, int>> vals;
+class MinStack
+{
+    std::stack<std::pair<int, int>> vals;
 
 public:
-  MinStack() {}
+    MinStack() {}
 
-  void push(int val) {
-    if (vals.empty())
-      vals.push({val, val});
-    else
-      vals.push({val, std::min(vals.top().second, val)});
-  }
+    void push(int val)
+    {
+        if (vals.empty())
+            vals.push({val, val});
+        else
+            vals.push({val, std::min(vals.top().second, val)});
+    }
 
-  void pop() { vals.pop(); }
+    void pop() { vals.pop(); }
 
-  int top() { return vals.top().first; }
+    int top() { return vals.top().first; }
 
-  int getMin() { return vals.top().second; }
+    int getMin() { return vals.top().second; }
 };
